@@ -3,7 +3,6 @@ local inputs = {
 	{"WarnMax", VALUE, 12, 99, 55 },
 	{"WarnMin", VALUE, 12, 99, 45 },
 	{"WarnRepeat", VALUE, 3, 60, 5 },
-	{"TelemAfterRec", VALUE, 0, 1, 0 },
  }
 
 local outputs = { 
