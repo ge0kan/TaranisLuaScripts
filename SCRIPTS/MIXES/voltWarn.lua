@@ -1,5 +1,5 @@
 local inputs = { 
-	{"PlaySwith", SOURCE},
+	{"PlaySwitch", SOURCE},
 	{"RSSI", SOURCE },
 	{"Batt", SOURCE },
 	{"CellNumber", VALUE, 1, 12, 4 },
@@ -24,7 +24,7 @@ local timer = TimerClass()
 local playVoltageWarning = PlayInLoopClass()
 local playVoltageCritical = PlayInLoopClass()
 local playVoltageManual = PlayInLoopClass()
-local playRssiWarning1 = PlayInLoopClass()
+local playRssiWarning = PlayInLoopClass()
 
 local function getCellStatus(cellVoltage, maxVoltage, warningVoltage, criticalVoltage, errorLowVoltage)
 	local cellStatus = 0
@@ -48,7 +48,7 @@ local telemetryOk = false
 local telemetryChanged = false
 local waitTelemetrySilent = false
 
-local function run(playTelemetrySwith, rssi, battVoltage, cellNumber, warningVoltage, criticalVoltage, warningRepeatPeriod, criticalRepeatPeriod)
+local function run(playTelemetrySwitch, rssi, battVoltage, cellNumber, warningVoltage, criticalVoltage, warningRepeatPeriod, criticalRepeatPeriod)
 	if telemetryOk == (rssi == 0) then
 		telemetryOk = rssi ~= 0
 		telemetryChanged = true
@@ -72,7 +72,7 @@ local function run(playTelemetrySwith, rssi, battVoltage, cellNumber, warningVol
 		end
 	
 		if not waitTelemetrySilent then 
-			if playTelemetrySwith == 0 then
+			if playTelemetrySwitch == 0 then
 				playVoltageManual:playNumber(cellVoltage, 1, criticalRepeatPeriod)
 			else
 				playVoltageManual:resetPlayTimer()
@@ -89,10 +89,10 @@ local function run(playTelemetrySwith, rssi, battVoltage, cellNumber, warningVol
 					playVoltageCritical:resetPlayTimer()
 				end
 				
-				if playTelemetrySwith == 1024 then
-					playRssiWarning1:playNumber(rssi, 16, criticalRepeatPeriod)
+				if playTelemetrySwitch == 1024 then
+					playRssiWarning:playNumber(rssi, 16, criticalRepeatPeriod)
 				else
-					playRssiWarning1:resetPlayTimer()
+					playRssiWarning:resetPlayTimer()
 				end
 				
 			end
