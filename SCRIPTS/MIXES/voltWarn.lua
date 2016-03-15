@@ -24,7 +24,7 @@ local timer = TimerClass()
 local playVoltageWarning = PlayInLoopClass()
 local playVoltageCritical = PlayInLoopClass()
 local playVoltageManual = PlayInLoopClass()
-local playRssiWarning = PlayInLoopClass()
+local playRssiManual = PlayInLoopClass()
 
 local function getCellStatus(cellVoltage, maxVoltage, warningVoltage, criticalVoltage, errorLowVoltage)
 	local cellStatus = 0
@@ -48,22 +48,21 @@ local telemetryOk = false
 local telemetryChanged = false
 local waitTelemetrySilent = false
 
-local function run(playTelemetrySwitch, rssi, battVoltage, cellNumber, warningVoltage, criticalVoltage, warningRepeatPeriod, criticalRepeatPeriod)
+local function run(manualPlaySwitch, rssi, battVoltage, cellNumber, warningVoltage, criticalVoltage, warningRepeatPeriod, criticalRepeatPeriod)
 	if telemetryOk == (rssi == 0) then
 		telemetryOk = rssi ~= 0
 		telemetryChanged = true
 	end
-	
-	local cellVoltage = battVoltage / cellNumber
 	
 	if telemetryChanged and telemetryOk then
 		timer:restart(silentDelayAfterTelemetryRecovered)
 		waitTelemetrySilent = true
 		telemetryChanged = false
 	end
+
+	local cellVoltage = battVoltage / cellNumber
 	
 	if telemetryOk then
-	
 		if timer:onElapsed() then
 			if playAfterTelemetryRecovery then
 				helper:playDecimalNumber(cellVoltage, 1)
@@ -72,7 +71,7 @@ local function run(playTelemetrySwitch, rssi, battVoltage, cellNumber, warningVo
 		end
 	
 		if not waitTelemetrySilent then 
-			if playTelemetrySwitch == 0 then
+			if manualPlaySwitch == 0 then
 				playVoltageManual:playNumber(cellVoltage, 1, criticalRepeatPeriod)
 			else
 				playVoltageManual:resetPlayTimer()
@@ -89,10 +88,10 @@ local function run(playTelemetrySwitch, rssi, battVoltage, cellNumber, warningVo
 					playVoltageCritical:resetPlayTimer()
 				end
 				
-				if playTelemetrySwitch == 1024 then
-					playRssiWarning:playNumber(rssi, 16, criticalRepeatPeriod)
+				if manualPlaySwitch == 1024 then
+					playRssiManual:playNumber(rssi, 16, criticalRepeatPeriod)
 				else
-					playRssiWarning:resetPlayTimer()
+					playRssiManual:resetPlayTimer()
 				end
 				
 			end

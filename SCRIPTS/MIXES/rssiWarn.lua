@@ -43,8 +43,6 @@ local function run(rssi, rssiWarningMax, rssiWarningMin, rssiWarningRepeatPeriod
 		if not waitTelemetrySilent then
 			if rssiWarningMin <= rssi and rssi <= rssiWarningMax then 
 				playRssiWarning:playNumber(rssi, 16, rssiWarningRepeatPeriod)
-			else
-				playRssiWarning:resetPlayTimer()
 			end
 		end
 	end
