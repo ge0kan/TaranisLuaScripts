@@ -17,6 +17,8 @@ local maxVoltage = 4.2
 local errorLowVoltage = 2.5
 local playAfterTelemetryRecovery = true
 local silentDelayAfterTelemetryRecovered = 2
+local manualPlaySwitchVoltageValue = 0
+local manualPlaySwitchRssiValue = 1024
 
 
 local helper = HelperClass()
@@ -71,7 +73,7 @@ local function run(manualPlaySwitch, rssi, battVoltage, cellNumber, warningVolta
 		end
 	
 		if not waitTelemetrySilent then 
-			if manualPlaySwitch == 0 then
+			if manualPlaySwitch == manualPlaySwitchVoltageValue then
 				playVoltageManual:playNumber(cellVoltage, 1, criticalRepeatPeriod)
 			else
 				playVoltageManual:resetPlayTimer()
@@ -88,7 +90,7 @@ local function run(manualPlaySwitch, rssi, battVoltage, cellNumber, warningVolta
 					playVoltageCritical:resetPlayTimer()
 				end
 				
-				if manualPlaySwitch == 1024 then
+				if manualPlaySwitch == manualPlaySwitchRssiValue then
 					playRssiManual:playNumber(rssi, 16, criticalRepeatPeriod)
 				else
 					playRssiManual:resetPlayTimer()
