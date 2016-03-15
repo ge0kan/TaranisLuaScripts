@@ -5,8 +5,12 @@
 -- Dado Sutter
 -- Ives Negreiros
 -- To Benjamin
----------------------------------------------------------------
 
+-- modified by korvin8
+-- 	chenge direction control: ail, ele
+-- 	add speed control: thr
+---------------------------------------------------------------
+local speed = 0;
 local xMax = math.floor( 212 / 6 ) - 1
 local yMax = math.floor( 64 / 8 ) - 1
 local game_map = {}
@@ -135,35 +139,37 @@ local function run(event)
   lcd.lock()
     
   snakeCounter = snakeCounter + 1
-  if snakeCounter < 30 then
+  if snakeCounter < speed then
+	  local dir = direction
+	  if getValue('ail') > 20 and direction ~= "left" then
+		dir = "right"
+		Head.dx = 1
+		Head.dy = 0
+	  end
+	  if getValue('ail') < -20 and direction ~= "right" then
+		dir = "left"
+		Head.dx = -1
+		Head.dy = 0
+	  end
+	  if getValue('ele') > 20 and direction ~= "down" then
+		dir = "up"
+		Head.dx = 0
+		Head.dy = -1
+	  end
+	  if getValue('ele') < -20 and direction ~= "up" then
+		dir = "down"
+		Head.dx = 0
+		Head.dy = 1
+	  end
+	  direction = dir
+	  
     return 0
   end
   
   snakeCounter = 0
  
-  local dir = direction
-  if getValue('rud') > 100 and direction ~= "left" then
-    dir = "right"
-    Head.dx = 1
-    Head.dy = 0
-  end
-  if getValue('rud') < -100 and direction ~= "right" then
-    dir = "left"
-    Head.dx = -1
-    Head.dy = 0
-  end
-  if getValue('ele') > 100 and direction ~= "down" then
-    dir = "up"
-    Head.dx = 0
-    Head.dy = -1
-  end
-  if getValue('ele') < -100 and direction ~= "up" then
-    dir = "down"
-    Head.dx = 0
-    Head.dy = 1
-  end
-
-  direction = dir
+  speed = 30 - (getValue('thr') + 1024)/79
+ 
   move()
 
   if check_collision() then
